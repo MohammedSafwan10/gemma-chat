@@ -18,12 +18,13 @@ function App() {
   }, [chat.messages])
 
   return (
-    <main className="app-shell">
+    <main className={`app-shell ${sidebarOpen ? 'sidebar-open' : ''}`}>
       <ChatSidebar
         modelName={chat.modelName}
         savedChats={chat.savedChats}
         selectedChatId={chat.activeChatId}
         open={sidebarOpen}
+        onToggle={() => setSidebarOpen((current) => !current)}
         onNewChat={chat.startNewChat}
         onLoadChat={chat.loadChat}
       />
@@ -31,7 +32,7 @@ function App() {
       <section className="workspace">
         <header className="topbar">
           <button
-            className="icon-button"
+            className="icon-button topbar-menu"
             type="button"
             onClick={() => setSidebarOpen((current) => !current)}
             aria-label="Toggle sidebar"

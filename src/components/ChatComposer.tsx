@@ -1,4 +1,5 @@
 import type { FormEvent, KeyboardEvent } from 'react'
+import { useEffect, useRef } from 'react'
 import { Paperclip, Send, Square, Trash2 } from 'lucide-react'
 
 type ChatComposerProps = {
@@ -18,6 +19,15 @@ export function ChatComposer({
   onSend,
   onStop,
 }: ChatComposerProps) {
+  const textareaRef = useRef<HTMLTextAreaElement | null>(null)
+
+  useEffect(() => {
+    const textarea = textareaRef.current
+    if (!textarea) return
+    textarea.style.height = 'auto'
+    textarea.style.height = `${Math.min(textarea.scrollHeight, 168)}px`
+  }, [prompt])
+
   function handleKeyDown(event: KeyboardEvent<HTMLTextAreaElement>) {
     if (event.key === 'Enter' && !event.shiftKey) {
       event.preventDefault()
@@ -28,11 +38,12 @@ export function ChatComposer({
   return (
     <form className="composer" onSubmit={onSend}>
       <textarea
+        ref={textareaRef}
         value={prompt}
         onChange={(event) => onPromptChange(event.target.value)}
         onKeyDown={handleKeyDown}
         placeholder="Ask anything..."
-        rows={3}
+        rows={1}
       />
 
       <div className="composer-actions">

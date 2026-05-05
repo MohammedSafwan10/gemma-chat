@@ -1,4 +1,4 @@
-import { MessageSquarePlus, Search, Sparkles } from 'lucide-react'
+import { Menu, MessageSquarePlus, Search } from 'lucide-react'
 import { formatTime } from '../lib/format'
 import type { SavedChat } from '../types/chat'
 
@@ -7,6 +7,7 @@ type ChatSidebarProps = {
   savedChats: SavedChat[]
   selectedChatId: string | null
   open: boolean
+  onToggle: () => void
   onNewChat: () => void
   onLoadChat: (chat: SavedChat) => void
 }
@@ -16,15 +17,16 @@ export function ChatSidebar({
   savedChats,
   selectedChatId,
   open,
+  onToggle,
   onNewChat,
   onLoadChat,
 }: ChatSidebarProps) {
   return (
     <aside className={`sidebar ${open ? 'open' : ''}`}>
-      <div className="brand">
-        <span className="brand-mark">
-          <Sparkles size={18} />
-        </span>
+      <div className="sidebar-header">
+        <button className="icon-button sidebar-toggle" type="button" onClick={onToggle} aria-label="Close sidebar">
+          <Menu size={18} />
+        </button>
         <div>
           <strong>Gemma Chat</strong>
           <small>{modelName}</small>
