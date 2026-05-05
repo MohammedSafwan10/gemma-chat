@@ -281,6 +281,7 @@ button {
   overflow-y: auto;
   overflow-x: visible;
   padding-right: 2px;
+  padding-bottom: 190px;
 }
 
 .chat-list {
@@ -349,8 +350,8 @@ button {
 .chat-menu {
   position: absolute;
   z-index: 5;
+  top: 32px;
   right: 2px;
-  bottom: 32px;
   display: grid;
   min-width: 166px;
   gap: 2px;
