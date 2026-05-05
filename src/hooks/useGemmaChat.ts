@@ -1,7 +1,8 @@
 import type { FormEvent } from 'react'
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { buildAttachmentPrompt, filesToAttachments } from '../lib/attachments'
-import { CHAT_STORAGE_KEY, MODEL_NAME, starterMessages } from '../lib/constants'
+import { MODEL_NAME, starterMessages } from '../lib/constants'
+import { deleteSavedChat, loadSavedChats, saveChat, updateSavedChat } from '../lib/db'
 import { getChatTitle } from '../lib/format'
 import { getOllamaRuntime, streamOllamaChat } from '../lib/ollama'
 import type { ChatAttachment, ChatMessage, OllamaStatus, SavedChat } from '../types/chat'
@@ -38,15 +39,8 @@ export function useGemmaChat() {
   }, [])
 
   useEffect(() => {
-    const stored = localStorage.getItem(CHAT_STORAGE_KEY)
-    if (stored) {
-      setSavedChats(JSON.parse(stored))
-    }
+    void loadSavedChats().then(setSavedChats)
   }, [])
-
-  useEffect(() => {
-    localStorage.setItem(CHAT_STORAGE_KEY, JSON.stringify(savedChats))
-  }, [savedChats])
 
   useEffect(() => {
     void checkOllama()
@@ -70,6 +64,7 @@ export function useGemmaChat() {
         savedChat,
         ...current.filter((chat) => chat.id !== savedChat.id),
       ].slice(0, 16))
+      void saveChat(savedChat)
     },
     [activeChatId, title],
   )
@@ -105,16 +100,19 @@ export function useGemmaChat() {
   const renameChat = useCallback((id: string, title: string) => {
     const nextTitle = title.trim()
     if (!nextTitle) return
+    const updatedAt = new Date().toISOString()
     setSavedChats((current) =>
       current.map((chat) =>
-        chat.id === id ? { ...chat, title: nextTitle, updatedAt: new Date().toISOString() } : chat,
+        chat.id === id ? { ...chat, title: nextTitle, updatedAt } : chat,
       ),
     )
+    void updateSavedChat(id, { title: nextTitle, updatedAt })
   }, [])
 
   const deleteChat = useCallback(
     (id: string) => {
       setSavedChats((current) => current.filter((chat) => chat.id !== id))
+      void deleteSavedChat(id)
       if (activeChatId === id) {
         setActiveChatId(null)
         setMessages(starterMessages)
@@ -124,10 +122,13 @@ export function useGemmaChat() {
   )
 
   const toggleStarChat = useCallback((id: string) => {
+    const chat = savedChats.find((item) => item.id === id)
+    const starred = !chat?.starred
     setSavedChats((current) =>
-      current.map((chat) => (chat.id === id ? { ...chat, starred: !chat.starred } : chat)),
+      current.map((item) => (item.id === id ? { ...item, starred } : item)),
     )
-  }, [])
+    if (chat) void updateSavedChat(id, { starred })
+  }, [savedChats])
 
   const addFiles = useCallback(async (files: FileList | File[]) => {
     setAttachmentError('')

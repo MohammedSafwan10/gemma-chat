@@ -29,6 +29,7 @@ Gemma Chat is a React + TypeScript app that talks to your local Ollama server, s
 - `react-markdown`
 - `remark-gfm`
 - `pdfjs-dist`
+- Dexie / IndexedDB
 - Ollama
 
 ## Requirements
@@ -87,6 +88,8 @@ Browser -> Vite /ollama proxy -> http://127.0.0.1:11434/api/chat
 The proxy is configured in `vite.config.ts`.
 
 Image attachments are sent to Ollama as base64 `images` on the user message. PDF and text files are extracted in the browser and appended as text context because Ollama chat does not take PDFs as native file objects.
+
+Chat history is stored locally in IndexedDB through Dexie. No backend or cloud database is required.
 
 The default model is configured in:
 
