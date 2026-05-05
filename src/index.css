@@ -279,6 +279,7 @@ button {
 .sidebar-scroll {
   min-height: 0;
   overflow-y: auto;
+  overflow-x: visible;
   padding-right: 2px;
 }
 
@@ -348,8 +349,8 @@ button {
 .chat-menu {
   position: absolute;
   z-index: 5;
-  top: 30px;
-  right: 0;
+  right: 2px;
+  bottom: 32px;
   display: grid;
   min-width: 166px;
   gap: 2px;
