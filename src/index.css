@@ -490,45 +490,28 @@ button {
 
 .message {
   display: grid;
-  grid-template-columns: 34px minmax(0, 760px);
-  gap: 11px;
+  grid-template-columns: minmax(0, 760px);
   max-width: 840px;
 }
 
 .message.user {
   align-self: end;
-  grid-template-columns: minmax(0, max-content) 34px;
+  grid-template-columns: minmax(0, max-content);
   max-width: min(720px, 86%);
 }
 
-.message.user .avatar {
-  grid-column: 2;
-  grid-row: 1;
-  color: var(--accent);
-}
-
 .message.user .bubble {
-  grid-column: 1;
   background: var(--surface-warm);
   justify-self: end;
   width: fit-content;
   max-width: 100%;
 }
 
-.avatar,
 .model-orb {
   display: grid;
   place-items: center;
   background: #f7efe2;
   color: var(--accent);
-}
-
-.avatar {
-  width: 34px;
-  height: 34px;
-  border-radius: 999px;
-  font-size: 13px;
-  font-weight: 800;
 }
 
 .bubble {
@@ -973,10 +956,6 @@ input[type="range"] {
   .message,
   .message.user {
     grid-template-columns: 1fr;
-  }
-
-  .message .avatar {
-    display: none;
   }
 
   .message.user .bubble {

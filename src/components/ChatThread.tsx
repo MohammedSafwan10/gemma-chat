@@ -1,4 +1,3 @@
-import { Bot } from 'lucide-react'
 import { useEffect, useRef } from 'react'
 import type { ChatMessage } from '../types/chat'
 import { MessageBubble } from './MessageBubble'
@@ -19,7 +18,6 @@ export function ChatThread({ messages, isStreaming }: ChatThreadProps) {
     <div className="thread">
       {messages.map((message) => (
         <article key={message.id} className={`message ${message.role}`}>
-          <div className="avatar">{message.role === 'user' ? 'S' : <Bot size={16} />}</div>
           <MessageBubble message={message} isStreaming={isStreaming && message === messages.at(-1)} />
         </article>
       ))}
