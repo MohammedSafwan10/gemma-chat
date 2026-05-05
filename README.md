@@ -1,8 +1,45 @@
-# Gemma Studio
+# Gemma Chat
 
-A local-first chatbot for `gemma4:e4b` running through Ollama.
+A calm, local-first chatbot UI for `gemma4:e4b` running on Ollama.
 
-## Run
+Gemma Chat is a React + TypeScript app that talks to your local Ollama server, streams replies live, renders markdown cleanly, and shows a collapsible thinking panel only when the model actually returns thinking tokens.
+
+![Gemma Chat beige UI reference](docs/ui-reference-beige.png)
+
+## Features
+
+- Local Ollama chat using `gemma4:e4b`
+- Streaming responses through Ollama's `/api/chat`
+- Optional thinking mode with a collapsible reasoning panel
+- Markdown, tables, lists, and code blocks via `react-markdown` and `remark-gfm`
+- Warm beige, Claude-inspired interface
+- Recent chat history saved in browser local storage
+- Runtime controls for thinking, temperature, and context window
+- Vite proxy so the browser does not call Ollama directly
+
+## Stack
+
+- React 19
+- TypeScript
+- Vite 8
+- Tailwind CSS 4
+- Lucide React icons
+- `react-markdown`
+- `remark-gfm`
+- Ollama
+
+## Requirements
+
+- Node.js
+- npm
+- Ollama
+- The `gemma4:e4b` model pulled locally
+
+Pull the model:
+
+```powershell
+ollama pull gemma4:e4b
+```
 
 Start Ollama if it is not already running:
 
@@ -10,10 +47,17 @@ Start Ollama if it is not already running:
 ollama serve
 ```
 
-Start the app:
+## Run Locally
+
+Install dependencies:
 
 ```powershell
 npm install
+```
+
+Start the Vite dev server:
+
+```powershell
 npm run dev
 ```
 
@@ -23,25 +67,48 @@ Open:
 http://127.0.0.1:5173
 ```
 
-## Stack
+## Build
 
-- React 19 + TypeScript
-- Vite 8
-- Tailwind CSS 4
-- shadcn-inspired local UI components
-- `react-markdown` + `remark-gfm`
-- Ollama native `/api/chat` streaming through the Vite `/ollama` proxy
+```powershell
+npm run build
+```
+
+## How It Works
+
+The app sends chat requests to a local Vite proxy:
+
+```text
+Browser -> Vite /ollama proxy -> http://127.0.0.1:11434/api/chat
+```
+
+The proxy is configured in `vite.config.ts`.
+
+The default model is configured in:
+
+```text
+src/lib/constants.ts
+```
+
+```ts
+export const MODEL_NAME = 'gemma4:e4b'
+```
+
+## Project Structure
+
+```text
+src/
+  components/     UI components
+  hooks/          Chat state and streaming logic
+  lib/            Constants, formatting, Ollama API helpers
+  types/          Shared TypeScript types
+  App.tsx         App layout
+  index.css       Full app styling
+```
+
+## Privacy
+
+Gemma Chat is designed for local use. The app talks to Ollama on your own machine through `127.0.0.1`. Chat history is stored in browser local storage. It is not sent to any cloud service by this app.
 
 ## Notes
 
-The app talks to local Ollama only:
-
-```text
-Browser -> Vite dev server -> http://127.0.0.1:11434/api/chat
-```
-
-The default model is set in `src/App.tsx`:
-
-```ts
-const modelName = 'gemma4:e4b'
-```
+Thinking is not faked in the UI. The thinking accordion appears only when Ollama streams `message.thinking`. Normal answer text renders from `message.content`.
