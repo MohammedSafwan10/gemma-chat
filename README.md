@@ -26,6 +26,7 @@ Gemma Chat is a React + TypeScript app that talks to your local Ollama server, s
 - Vite 8
 - Tailwind CSS 4
 - Lucide React icons
+- Source Sans 3 and Newsreader through Fontsource
 - `react-markdown`
 - `remark-gfm`
 - `pdfjs-dist`
