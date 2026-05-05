@@ -102,6 +102,33 @@ export function useGemmaChat() {
     [isStreaming],
   )
 
+  const renameChat = useCallback((id: string, title: string) => {
+    const nextTitle = title.trim()
+    if (!nextTitle) return
+    setSavedChats((current) =>
+      current.map((chat) =>
+        chat.id === id ? { ...chat, title: nextTitle, updatedAt: new Date().toISOString() } : chat,
+      ),
+    )
+  }, [])
+
+  const deleteChat = useCallback(
+    (id: string) => {
+      setSavedChats((current) => current.filter((chat) => chat.id !== id))
+      if (activeChatId === id) {
+        setActiveChatId(null)
+        setMessages(starterMessages)
+      }
+    },
+    [activeChatId],
+  )
+
+  const toggleStarChat = useCallback((id: string) => {
+    setSavedChats((current) =>
+      current.map((chat) => (chat.id === id ? { ...chat, starred: !chat.starred } : chat)),
+    )
+  }, [])
+
   const addFiles = useCallback(async (files: FileList | File[]) => {
     setAttachmentError('')
     try {
@@ -220,6 +247,8 @@ export function useGemmaChat() {
     modelName: MODEL_NAME,
     numCtx,
     prompt,
+    deleteChat,
+    renameChat,
     runningModel,
     savedChats,
     sendMessage,
@@ -233,5 +262,6 @@ export function useGemmaChat() {
     stopStreaming,
     temperature,
     think,
+    toggleStarChat,
   }
 }

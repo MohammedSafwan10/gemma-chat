@@ -24,6 +24,7 @@ export type SavedChat = {
   title: string
   updatedAt: string
   messages: ChatMessage[]
+  starred?: boolean
 }
 
 export type OllamaStatus = 'checking' | 'online' | 'offline'

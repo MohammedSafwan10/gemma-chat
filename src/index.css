@@ -82,8 +82,11 @@ button {
   flex-direction: column;
   gap: 14px;
   overflow: hidden;
-  padding: 14px 12px;
-  background: rgba(238, 230, 216, 0.94);
+  padding: 18px 14px 14px;
+  background:
+    linear-gradient(180deg, rgba(31, 29, 25, 0.96), rgba(28, 26, 22, 0.94)),
+    rgba(31, 29, 25, 0.92);
+  color: #e9dfcf;
   opacity: 0;
   transform: translateX(-100%);
   transition:
@@ -98,26 +101,46 @@ button {
 
 .sidebar-header {
   display: grid;
-  grid-template-columns: 38px minmax(0, 1fr);
+  grid-template-columns: minmax(0, 1fr) 32px;
   gap: 10px;
   align-items: center;
   min-height: 40px;
 }
 
-.sidebar-header > div {
-  display: grid;
-  gap: 2px;
-  min-width: 0;
-}
-
-.sidebar-header strong,
-.sidebar-header small {
+.sidebar-header strong {
   overflow: hidden;
+  color: #fff7e8;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 22px;
+  font-weight: 500;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
 
-.sidebar-header small,
+.sidebar-collapse {
+  display: grid;
+  width: 32px;
+  height: 32px;
+  place-items: center;
+  border: 0;
+  border-radius: 7px;
+  background: transparent;
+  cursor: pointer;
+}
+
+.sidebar-collapse span {
+  width: 16px;
+  height: 12px;
+  border: 1px solid rgba(233, 223, 207, 0.55);
+  border-left-width: 5px;
+  border-radius: 2px;
+}
+
+.sidebar-collapse:hover {
+  background: rgba(255, 247, 232, 0.08);
+}
+
+.sidebar-model,
 .topbar p,
 .empty-state,
 .chat-list small,
@@ -126,16 +149,13 @@ button {
   color: var(--muted);
 }
 
-.sidebar-header strong,
 .topbar h1,
 .model-card h2 {
   letter-spacing: 0;
 }
 
-.new-chat-button,
 .send-button,
 .icon-button,
-.chat-list button,
 .switch {
   border: 0;
   border-radius: var(--radius);
@@ -147,9 +167,7 @@ button {
     box-shadow 150ms ease;
 }
 
-.new-chat-button:hover,
 .icon-button:hover,
-.chat-list button:hover,
 .switch:hover {
   background: rgba(121, 84, 49, 0.08);
 }
@@ -160,7 +178,6 @@ button {
   box-shadow: 0 8px 24px rgba(118, 74, 49, 0.2);
 }
 
-.new-chat-button,
 .send-button {
   display: inline-flex;
   align-items: center;
@@ -170,34 +187,6 @@ button {
   background: var(--accent);
   color: #fffaf0;
   font-weight: 760;
-}
-
-.new-chat-button:hover {
-  background: var(--accent-strong);
-}
-
-.search-box {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  height: 38px;
-  padding: 0 10px;
-  border-radius: var(--radius);
-  background: rgba(255, 253, 247, 0.68);
-  color: var(--muted);
-}
-
-.search-box input {
-  width: 100%;
-  border: 0;
-  outline: 0;
-  background: transparent;
-  color: var(--text);
-}
-
-.sidebar-section {
-  min-height: 0;
-  overflow: auto;
 }
 
 .runtime-card {
@@ -219,33 +208,184 @@ button {
   text-transform: uppercase;
 }
 
-.chat-list {
-  display: grid;
-  gap: 4px;
+.sidebar .section-title {
+  margin: 16px 2px 8px;
+  padding: 0;
+  color: rgba(233, 223, 207, 0.46);
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: none;
 }
 
-.chat-list button {
+.sidebar-nav {
   display: grid;
-  gap: 3px;
-  padding: 9px 10px;
-  color: var(--text);
+  gap: 2px;
+}
+
+.sidebar-nav button,
+.sidebar-nav label {
+  display: grid;
+  grid-template-columns: 24px minmax(0, 1fr);
+  gap: 8px;
+  align-items: center;
+  min-height: 34px;
+  border: 0;
+  border-radius: 7px;
+  background: transparent;
+  color: #e9dfcf;
+  cursor: pointer;
+  font: inherit;
+  font-weight: 700;
+}
+
+.sidebar-nav button:hover,
+.sidebar-nav label:focus-within,
+.sidebar-nav label:hover {
+  background: rgba(255, 247, 232, 0.08);
+}
+
+.sidebar-nav svg {
+  justify-self: center;
+  color: rgba(233, 223, 207, 0.78);
+}
+
+.sidebar-nav input {
+  width: 100%;
+  border: 0;
+  outline: 0;
+  background: transparent;
+  color: #e9dfcf;
+}
+
+.sidebar-nav input::placeholder {
+  color: #e9dfcf;
+  opacity: 1;
+}
+
+.sidebar-model {
+  width: fit-content;
+  margin-left: 2px;
+  padding: 4px 9px;
+  border-radius: 999px;
+  background: rgba(255, 247, 232, 0.06);
+  color: rgba(233, 223, 207, 0.55);
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.sidebar-scroll {
+  min-height: 0;
+  overflow-y: auto;
+  padding-right: 2px;
+}
+
+.chat-list {
+  display: grid;
+  gap: 2px;
+}
+
+.chat-row {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 34px;
+  align-items: center;
+  border-radius: 7px;
+}
+
+.chat-row:hover,
+.chat-row.selected {
+  background: rgba(255, 247, 232, 0.08);
+}
+
+.chat-row-main {
+  display: grid;
+  min-width: 0;
+  gap: 2px;
+  border: 0;
+  padding: 8px 4px 8px 2px;
+  background: transparent;
+  color: rgba(233, 223, 207, 0.82);
+  cursor: pointer;
   text-align: left;
 }
 
-.chat-list button.selected {
-  background: rgba(155, 102, 66, 0.12);
-}
-
-.chat-list span {
+.chat-row-main span {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
 
+.chat-row-main small {
+  display: none;
+}
+
+.chat-menu-button {
+  display: grid;
+  width: 30px;
+  height: 30px;
+  place-items: center;
+  border: 0;
+  border-radius: 7px;
+  background: transparent;
+  color: rgba(233, 223, 207, 0.7);
+  cursor: pointer;
+  opacity: 0;
+}
+
+.chat-row:hover .chat-menu-button,
+.chat-row.selected .chat-menu-button,
+.chat-menu-button:focus {
+  opacity: 1;
+}
+
+.chat-menu-button:hover {
+  background: rgba(255, 247, 232, 0.1);
+}
+
+.chat-menu {
+  position: absolute;
+  z-index: 5;
+  top: 30px;
+  right: 0;
+  display: grid;
+  min-width: 166px;
+  gap: 2px;
+  padding: 8px;
+  border: 1px solid rgba(255, 247, 232, 0.13);
+  border-radius: 10px;
+  background: rgba(46, 43, 37, 0.98);
+  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.32);
+}
+
+.chat-menu button {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 34px;
+  border: 0;
+  border-radius: 7px;
+  background: transparent;
+  color: rgba(233, 223, 207, 0.86);
+  cursor: pointer;
+  text-align: left;
+}
+
+.chat-menu button:hover {
+  background: rgba(255, 247, 232, 0.08);
+}
+
+.chat-menu button.danger {
+  color: #f0a39b;
+}
+
 .empty-state {
   margin: 0;
-  padding: 10px;
+  padding: 8px 2px;
   font-size: 13px;
+}
+
+.sidebar .empty-state {
+  color: rgba(233, 223, 207, 0.54);
 }
 
 .workspace {

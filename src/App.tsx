@@ -27,6 +27,9 @@ function App() {
         onToggle={() => setSidebarOpen((current) => !current)}
         onNewChat={chat.startNewChat}
         onLoadChat={chat.loadChat}
+        onRenameChat={chat.renameChat}
+        onDeleteChat={chat.deleteChat}
+        onToggleStarChat={chat.toggleStarChat}
       />
 
       <section className="workspace">
