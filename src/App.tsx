@@ -52,9 +52,13 @@ function App() {
           <section className="chat-surface">
             <ChatThread messages={chat.messages} isStreaming={chat.isStreaming} />
             <ChatComposer
+              attachments={chat.attachments}
+              attachmentError={chat.attachmentError}
               prompt={chat.prompt}
               isStreaming={chat.isStreaming}
+              onAddFiles={chat.addFiles}
               onPromptChange={chat.setPrompt}
+              onRemoveAttachment={chat.removeAttachment}
               onClear={chat.clearChat}
               onSend={chat.sendMessage}
               onStop={chat.stopStreaming}

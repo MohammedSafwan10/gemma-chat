@@ -533,11 +533,91 @@ button {
   line-height: 1.45;
 }
 
+.attachment-tray,
+.message-attachments {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.attachment-tray {
+  padding: 10px 10px 0;
+}
+
+.attachment-chip,
+.message-attachments span {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  max-width: 220px;
+  min-height: 34px;
+  padding: 4px 8px;
+  border-radius: var(--radius);
+  background: #f3eadc;
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.attachment-chip > span,
+.message-attachments span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.attachment-chip img {
+  width: 28px;
+  height: 28px;
+  border-radius: 6px;
+  object-fit: cover;
+}
+
+.attachment-chip button {
+  display: inline-grid;
+  width: 20px;
+  height: 20px;
+  place-items: center;
+  border: 0;
+  border-radius: 999px;
+  background: rgba(121, 84, 49, 0.08);
+  color: var(--muted);
+  cursor: pointer;
+}
+
+.file-kind {
+  display: inline-grid;
+  width: 22px;
+  height: 22px;
+  place-items: center;
+  border-radius: 6px;
+  background: rgba(155, 102, 66, 0.1);
+}
+
+.attachment-error {
+  padding: 0 16px 8px;
+  color: var(--danger);
+  font-size: 12px;
+  font-weight: 700;
+}
+
 .composer-actions {
   display: flex;
   align-items: center;
   gap: 8px;
   padding: 0 10px 10px;
+}
+
+.message-attachments {
+  margin-bottom: 10px;
+}
+
+.message-attachments img {
+  max-width: min(280px, 100%);
+  max-height: 220px;
+  border-radius: var(--radius);
+  object-fit: contain;
+  box-shadow: 0 1px 0 var(--line);
 }
 
 .send-button {

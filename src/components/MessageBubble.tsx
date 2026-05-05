@@ -1,4 +1,4 @@
-import { ChevronDown, Sparkles } from 'lucide-react'
+import { ChevronDown, FileText, Image, Sparkles } from 'lucide-react'
 import { useState } from 'react'
 import ReactMarkdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
@@ -16,6 +16,21 @@ export function MessageBubble({ message, isStreaming }: MessageBubbleProps) {
 
   return (
     <div className="bubble">
+      {message.attachments?.length ? (
+        <div className="message-attachments">
+          {message.attachments.map((attachment) =>
+            attachment.kind === 'image' && attachment.imagePreview ? (
+              <img key={attachment.id} src={attachment.imagePreview} alt={attachment.name} />
+            ) : (
+              <span key={attachment.id}>
+                {attachment.kind === 'image' ? <Image size={14} /> : <FileText size={14} />}
+                {attachment.name}
+              </span>
+            ),
+          )}
+        </div>
+      ) : null}
+
       {hasThinking ? (
         <section className="thinking-panel">
           <button type="button" onClick={() => setThinkingOpen((current) => !current)}>

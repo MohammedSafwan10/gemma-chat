@@ -11,6 +11,8 @@ Gemma Chat is a React + TypeScript app that talks to your local Ollama server, s
 - Local Ollama chat using `gemma4:e4b`
 - Streaming responses through Ollama's `/api/chat`
 - Optional thinking mode with a collapsible reasoning panel
+- Image input for vision-capable Ollama models
+- PDF and text/code file attachments with client-side text extraction
 - Markdown, tables, lists, and code blocks via `react-markdown` and `remark-gfm`
 - Warm beige, Claude-inspired interface
 - Recent chat history saved in browser local storage
@@ -26,6 +28,7 @@ Gemma Chat is a React + TypeScript app that talks to your local Ollama server, s
 - Lucide React icons
 - `react-markdown`
 - `remark-gfm`
+- `pdfjs-dist`
 - Ollama
 
 ## Requirements
@@ -82,6 +85,8 @@ Browser -> Vite /ollama proxy -> http://127.0.0.1:11434/api/chat
 ```
 
 The proxy is configured in `vite.config.ts`.
+
+Image attachments are sent to Ollama as base64 `images` on the user message. PDF and text files are extracted in the browser and appended as text context because Ollama chat does not take PDFs as native file objects.
 
 The default model is configured in:
 

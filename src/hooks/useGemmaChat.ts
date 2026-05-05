@@ -1,15 +1,18 @@
 import type { FormEvent } from 'react'
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { buildAttachmentPrompt, filesToAttachments } from '../lib/attachments'
 import { CHAT_STORAGE_KEY, MODEL_NAME, starterMessages } from '../lib/constants'
 import { getChatTitle } from '../lib/format'
 import { getOllamaRuntime, streamOllamaChat } from '../lib/ollama'
-import type { ChatMessage, OllamaStatus, SavedChat } from '../types/chat'
+import type { ChatAttachment, ChatMessage, OllamaStatus, SavedChat } from '../types/chat'
 
 export function useGemmaChat() {
   const [messages, setMessages] = useState<ChatMessage[]>(starterMessages)
   const [savedChats, setSavedChats] = useState<SavedChat[]>([])
   const [activeChatId, setActiveChatId] = useState<string | null>(null)
   const [prompt, setPrompt] = useState('')
+  const [attachments, setAttachments] = useState<ChatAttachment[]>([])
+  const [attachmentError, setAttachmentError] = useState('')
   const [status, setStatus] = useState<OllamaStatus>('checking')
   const [runningModel, setRunningModel] = useState('Checking Ollama')
   const [isStreaming, setIsStreaming] = useState(false)
@@ -76,11 +79,15 @@ export function useGemmaChat() {
     setMessages(starterMessages)
     setActiveChatId(null)
     setPrompt('')
+    setAttachments([])
+    setAttachmentError('')
   }, [messages, persistChat])
 
   const clearChat = useCallback(() => {
     setMessages(starterMessages)
     setPrompt('')
+    setAttachments([])
+    setAttachmentError('')
   }, [])
 
   const loadChat = useCallback(
@@ -89,20 +96,46 @@ export function useGemmaChat() {
       setMessages(chat.messages)
       setActiveChatId(chat.id)
       setPrompt('')
+      setAttachments([])
+      setAttachmentError('')
     },
     [isStreaming],
   )
+
+  const addFiles = useCallback(async (files: FileList | File[]) => {
+    setAttachmentError('')
+    try {
+      const nextAttachments = await filesToAttachments(files)
+      if (nextAttachments.length === 0) {
+        setAttachmentError('Supported files: images, PDFs, and text/code files.')
+        return
+      }
+      setAttachments((current) => [...current, ...nextAttachments].slice(0, 6))
+    } catch {
+      setAttachmentError('Could not read that file.')
+    }
+  }, [])
+
+  const removeAttachment = useCallback((id: string) => {
+    setAttachments((current) => current.filter((attachment) => attachment.id !== id))
+  }, [])
 
   const sendMessage = useCallback(
     async (event?: FormEvent) => {
       event?.preventDefault()
       const trimmedPrompt = prompt.trim()
-      if (!trimmedPrompt || isStreaming) return
+      if ((!trimmedPrompt && attachments.length === 0) || isStreaming) return
+
+      const content = buildAttachmentPrompt(
+        trimmedPrompt || 'Please analyze the attached file.',
+        attachments,
+      )
 
       const userMessage: ChatMessage = {
         id: crypto.randomUUID(),
         role: 'user',
-        content: trimmedPrompt,
+        content,
+        attachments,
       }
       const assistantMessage: ChatMessage = {
         id: crypto.randomUUID(),
@@ -115,6 +148,8 @@ export function useGemmaChat() {
 
       setMessages(nextMessages)
       setPrompt('')
+      setAttachments([])
+      setAttachmentError('')
       setIsStreaming(true)
 
       const controller = new AbortController()
@@ -165,7 +200,7 @@ export function useGemmaChat() {
         abortRef.current = null
       }
     },
-    [checkOllama, isStreaming, messages, numCtx, prompt, temperature, think],
+    [attachments, checkOllama, isStreaming, messages, numCtx, prompt, temperature, think],
   )
 
   const stopStreaming = useCallback(() => {
@@ -175,6 +210,9 @@ export function useGemmaChat() {
 
   return {
     activeChatId,
+    addFiles,
+    attachmentError,
+    attachments,
     clearChat,
     isStreaming,
     loadChat,
@@ -185,6 +223,7 @@ export function useGemmaChat() {
     runningModel,
     savedChats,
     sendMessage,
+    removeAttachment,
     setNumCtx,
     setPrompt,
     setTemperature,

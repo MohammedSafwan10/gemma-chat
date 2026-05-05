@@ -42,7 +42,13 @@ export async function streamOllamaChat({
       model: MODEL_NAME,
       stream: true,
       think,
-      messages: messages.map(({ role, content }) => ({ role, content })),
+      messages: messages.map(({ role, content, attachments }) => {
+        const images = attachments
+          ?.filter((attachment) => attachment.kind === 'image' && attachment.imageBase64)
+          .map((attachment) => attachment.imageBase64 as string)
+
+        return images?.length ? { role, content, images } : { role, content }
+      }),
       options: {
         num_ctx: numCtx,
         temperature,
